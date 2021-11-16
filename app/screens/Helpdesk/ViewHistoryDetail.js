@@ -540,9 +540,9 @@ export default function ViewHistoryDetail({route}) {
                         style={{
                           width: '100%',
                           height: 'auto',
-                          borderColor: '#555',
+                          borderColor: '#bcbbc1',
                           borderRadius: 10,
-                          borderWidth: 1,
+                          borderWidth: 0.5,
                           padding: 5,
                         }}>
                         <Text style={{width: '100%'}}>
