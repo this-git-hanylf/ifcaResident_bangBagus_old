@@ -13,6 +13,7 @@ import {
   Tag,
   CategoryIconSoft,
 } from '@components';
+import EmptyImage from '../../components/Image/EmptyImage';
 import {BaseColor, BaseStyle, useTheme, Images} from '@config';
 import {CheckBox, Badge, Divider} from 'react-native-elements';
 // import {Image} from 'react-native';
@@ -21,6 +22,7 @@ import {useNavigation} from '@react-navigation/native';
 import {enableExperimental} from '@utils';
 import React, {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
+
 import {
   FlatList,
   TouchableOpacity,
@@ -199,7 +201,7 @@ export default function ViewHistoryDetail({route}) {
         const resImageMulti = res.data.DataImage; //
         const resDataAction = res.data.DataAction; //diisi oleh engineer,
 
-        console.log('resImageMulti', resImageMulti);
+        console.log('resImageMulti', resTiketMulti);
         // console.log('resDataAction', resDataAction);
 
         setDataTiketMulti(resTiketMulti);
@@ -216,8 +218,8 @@ export default function ViewHistoryDetail({route}) {
 
   const getSolvedPicture = async data => {
     const formData = {
-      report_no: 'EX21090021', //hardcode dulu
-      // report_no: data.report_no,
+      // report_no: 'EX21090021', //hardcode dulu
+      report_no: data.report_no,
     };
 
     // console.log('form data multi', formData);
@@ -328,26 +330,41 @@ export default function ViewHistoryDetail({route}) {
         <Text headline style={{fontWeight: 'normal'}}>
           View History Ticket Detail
         </Text>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginVertical: 10,
+          }}>
           {TABS.map((item, index) => (
             <View key={index} style={{flex: 1, paddingHorizontal: 0}}>
               <Tag
                 primary
                 style={{
-                  height: 50,
-
+                  height: 45,
+                  borderRadius: 10,
+                  marginHorizontal: 5,
                   backgroundColor:
                     tab.id == item.id ? colors.primary : colors.background,
+                  borderColor: colors.primary,
+                  borderWidth: 1,
                 }}
                 onPress={() => {
                   enableExperimental();
                   setTab(item);
                 }}>
                 <Text
-                  style={{fontSize: 16}}
+                  style={{
+                    fontSize: 16,
+                    color: tab.id == item.id ? '#fff' : colors.primary,
+                  }}
                   body1={tab.id != item.id}
                   light={tab.id != item.id}
-                  whiteColor={tab.id == item.id}>
+
+                  // whiteColor={
+                  //   tab.id == item.id ? colors.primary : colors.whiteColor
+                  // }
+                >
                   {item.title}
                 </Text>
               </Tag>
@@ -367,46 +384,94 @@ export default function ViewHistoryDetail({route}) {
             {tab.id == 1 && (
               <ScrollView>
                 <View style={{margin: 5}}>
-                  <View>
-                    <Text style={{marginVertical: 8}}>Status</Text>
-                    <Text
-                      style={{
-                        color: colors.primary,
-                        fontSize: 16,
-                        marginBottom: 8,
-                      }}>
-                      {dataTiketMulti.status == 'R'
-                        ? 'Open'
-                        : dataTiketMulti.status == 'A'
-                        ? 'Assign'
-                        : dataTiketMulti.status == 'S'
-                        ? 'Need Confirmation'
-                        : dataTiketMulti.status == 'P'
-                        ? 'Procces'
-                        : dataTiketMulti.status == 'F'
-                        ? 'Confirm'
-                        : dataTiketMulti.status == 'V'
-                        ? 'Solve'
-                        : dataTiketMulti.status == 'C'
-                        ? 'Completed'
-                        : dataTiketMulti.status == 'D'
-                        ? 'Done'
-                        : ''}
-                    </Text>
+                  <View style={{marginVertical: 8}}>
+                    {/* <Divider orientation="horizontal" /> */}
+                    <Divider inset={true} insetType="middle" />
                   </View>
-                  <Divider orientation="horizontal" />
                   <View
                     style={{
                       flexDirection: 'row',
                     }}>
                     <View style={{alignContent: 'space-between', flex: 1}}>
-                      <Text style={{marginVertical: 8}}>Tanggal Transaksi</Text>
+                      <View>
+                        <Text style={{marginVertical: 8}}>Status</Text>
+                        <Text
+                          style={{
+                            color: colors.primary,
+                            fontSize: 16,
+                            marginBottom: 8,
+                          }}>
+                          {dataTiketMulti.status == 'R'
+                            ? 'Open'
+                            : dataTiketMulti.status == 'A'
+                            ? 'Assign'
+                            : dataTiketMulti.status == 'S'
+                            ? 'Need Confirmation'
+                            : dataTiketMulti.status == 'P'
+                            ? 'Procces'
+                            : dataTiketMulti.status == 'F'
+                            ? 'Confirm'
+                            : dataTiketMulti.status == 'V'
+                            ? 'Solve'
+                            : dataTiketMulti.status == 'C'
+                            ? 'Completed'
+                            : dataTiketMulti.status == 'D'
+                            ? 'Done'
+                            : ''}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={{alignContent: 'space-between'}}>
+                      <View>
+                        <Text style={{marginVertical: 8, textAlign: 'right'}}>
+                          Ticket No
+                        </Text>
+                        <Text
+                          style={{
+                            // color: colors.primary,
+                            fontWeight: 'bold',
+
+                            fontSize: 14,
+                            marginBottom: 8,
+                            textAlign: 'right',
+                          }}>
+                          # {dataTiketMulti.report_no}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View style={{marginVertical: 8}}>
+                    <Divider orientation="horizontal" />
+                  </View>
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                    }}>
+                    <View style={{alignContent: 'space-between', flex: 1}}>
+                      <Text style={{marginVertical: 8}}>Transaction Date</Text>
                     </View>
                     <View style={{alignContent: 'space-between'}}>
                       <Text style={{fontWeight: 'bold', marginVertical: 8}}>
                         {moment(dataTiketMulti.reported_date).format(
                           'DD MMM YYYY hh:mm',
                         )}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                    }}>
+                    <View style={{alignContent: 'space-between', flex: 1}}>
+                      <Text style={{marginVertical: 8}}>Request Type</Text>
+                    </View>
+                    <View style={{alignContent: 'space-between'}}>
+                      <Text style={{fontWeight: 'bold', marginVertical: 8}}>
+                        {dataTiketMulti.request_type == 'U'
+                          ? 'Unit'
+                          : 'Public Area'}
                       </Text>
                     </View>
                   </View>
@@ -423,44 +488,32 @@ export default function ViewHistoryDetail({route}) {
                       </Text>
                     </View>
                   </View>
-                  <Divider orientation="horizontal" />
                   <View
                     style={{
                       flexDirection: 'row',
                     }}>
                     <View style={{alignContent: 'space-between', flex: 1}}>
-                      <Text style={{marginVertical: 8}}>Ticket No</Text>
+                      <Text style={{marginVertical: 8}}>Lot No</Text>
                     </View>
                     <View style={{alignContent: 'space-between'}}>
                       <Text style={{fontWeight: 'bold', marginVertical: 8}}>
-                        # {dataTiketMulti.report_no}
+                        {dataTiketMulti.lot_no}
                       </Text>
                     </View>
                   </View>
-                  <Divider orientation="horizontal" />
-
-                  <View>
-                    <Text
-                      style={{
-                        fontWeight: 'bold',
-                        marginVertical: 24,
-                        fontSize: 16,
-                      }}>
-                      {t('detail')}
-                    </Text>
+                  <View style={{marginVertical: 8}}>
+                    <Divider orientation="horizontal" />
                   </View>
 
                   <View
                     style={{
                       flexDirection: 'row',
-                      alignItems: 'center',
-                      marginVertical: 5,
                     }}>
-                    <View style={widthStyle}>
-                      <Text>Name</Text>
+                    <View style={{alignContent: 'space-between', flex: 1}}>
+                      <Text style={{marginVertical: 8}}>Name of Owner</Text>
                     </View>
-                    <View>
-                      <Text style={{fontWeight: 'bold'}}>
+                    <View style={{alignContent: 'space-between'}}>
+                      <Text style={{fontWeight: 'bold', marginVertical: 8}}>
                         {dataTiketMulti.name}
                       </Text>
                     </View>
@@ -469,19 +522,37 @@ export default function ViewHistoryDetail({route}) {
                   <View
                     style={{
                       flexDirection: 'row',
-                      alignItems: 'center',
-                      marginVertical: 5,
                     }}>
-                    <View style={widthStyle}>
-                      <Text>Unit</Text>
+                    <View style={{alignContent: 'space-between', flex: 1}}>
+                      <Text style={{marginVertical: 8}}>Requested By</Text>
                     </View>
-                    <View>
-                      <Text style={{fontWeight: 'bold'}}>
-                        {dataTiketMulti.lot_no}
+                    <View style={{alignContent: 'space-between'}}>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          marginVertical: 8,
+                          // textAlign: 'left', //kalo ini buat rata kiri
+                        }}>
+                        {dataTiketPassProp.reported_by}
                       </Text>
                     </View>
                   </View>
+
                   <View
+                    style={{
+                      flexDirection: 'row',
+                    }}>
+                    <View style={{alignContent: 'space-between', flex: 1}}>
+                      <Text style={{marginVertical: 8}}>Contact No</Text>
+                    </View>
+                    <View style={{alignContent: 'space-between'}}>
+                      <Text style={{fontWeight: 'bold', marginVertical: 8}}>
+                        {dataTiketMulti.contact_no}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* <View
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
@@ -495,38 +566,22 @@ export default function ViewHistoryDetail({route}) {
                         {dataTiketMulti.contact_no}
                       </Text>
                     </View>
-                  </View>
+                  </View> */}
                   <View
                     style={{
                       flexDirection: 'row',
-                      alignItems: 'center',
-                      marginVertical: 5,
                     }}>
-                    <View style={widthStyle}>
-                      <Text>Reported By</Text>
+                    <View style={{alignContent: 'space-between', flex: 1}}>
+                      <Text style={{marginVertical: 8}}>Location</Text>
                     </View>
-                    <View>
-                      <Text style={{fontWeight: 'bold'}}>
-                        {dataTiketPassProp.reported_by}
-                      </Text>
-                    </View>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginVertical: 5,
-                      // width: '60%', //sementara, kalo udah ada isinya, ini di hide lagi
-                    }}>
-                    <View style={widthStyle}>
-                      <Text>Complain Type</Text>
-                    </View>
-                    <View>
-                      <Text style={{flexWrap: 'wrap', fontWeight: 'bold'}}>
-                        Requested
-                        {/* hardcode coy */}
-                        {/* dari get data multi gak ada complain_type? */}
-                        {/* {dataTiketMulti.status == 'C' ? 'Complain' : 'Request'} */}
+                    <View style={{alignContent: 'space-between'}}>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          marginVertical: 8,
+                          // textAlign: 'left', //kalo ini buat rata kiri
+                        }}>
+                        {dataTiketMulti.location}
                       </Text>
                     </View>
                   </View>
@@ -540,12 +595,13 @@ export default function ViewHistoryDetail({route}) {
                         style={{
                           width: '100%',
                           height: 'auto',
-                          borderColor: '#bcbbc1',
-                          borderRadius: 10,
+                          borderColor: '#e6e6e6',
+                          backgroundColor: '#e6e6e6',
+                          borderRadius: 8,
                           borderWidth: 0.5,
                           padding: 5,
                         }}>
-                        <Text style={{width: '100%'}}>
+                        <Text style={{width: '100%', height: 100}}>
                           {dataTiketMulti.work_requested}
                         </Text>
                       </View>
@@ -556,69 +612,41 @@ export default function ViewHistoryDetail({route}) {
                       Gallery of Request
                     </Text>
                   </View>
-                  <View style={{flexDirection: 'row'}}>
-                    <ScrollView horizontal>
-                      {dataImageMulti.map((item, key) => {
-                        return (
-                          <TouchableOpacity
-                            key={key}
-                            style={{width: 100, height: 100, margin: 5}}
-                            activeOpacity={1}
-                            onPress={() =>
-                              navigation.navigate('PreviewImageHelpdesk', {
-                                images: dataImageMulti,
-                              })
-                            }>
-                            <Image
+                  {dataImageMulti != 0 ? (
+                    <View style={{flexDirection: 'row', height: 400}}>
+                      <ScrollView horizontal>
+                        {dataImageMulti.map((item, key) => {
+                          return (
+                            <TouchableOpacity
                               key={key}
-                              style={{
-                                flex: 1,
-                                width: '100%',
-                                height: '100%',
-                                marginTop: 20,
-                              }}
-                              source={{uri: `${item.file_url}`}}
-                            />
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </ScrollView>
-                  </View>
-                  <View style={{marginTop: 20}}>
-                    <Text style={{fontWeight: 'bold', fontSize: 14}}>
-                      Gallery of Solved
-                    </Text>
-                  </View>
-                  <View style={{marginBottom: '40%', flexDirection: 'row'}}>
-                    <ScrollView horizontal>
-                      {image_solved?.map((item, key) => {
-                        return (
-                          <TouchableOpacity
-                            key={key}
-                            style={{width: 100, height: 100, margin: 5}}
-                            activeOpacity={1}
-                            onPress={() =>
-                              navigation.navigate('PreviewImageHelpdesk', {
-                                images: image_solved,
-                              })
-                            }>
-                            <Image
-                              key={key}
-                              style={{
-                                flex: 1,
-                                width: '100%',
-                                height: '100%',
-                                // height: 400,
-                                marginTop: 10,
-                              }}
-                              source={{uri: `${item.file_url}`}}
-                            />
-                          </TouchableOpacity>
-                          // </View>
-                        );
-                      })}
-                    </ScrollView>
-                  </View>
+                              style={{width: 100, height: 100, margin: 5}}
+                              activeOpacity={1}
+                              onPress={() =>
+                                navigation.navigate('PreviewImageHelpdesk', {
+                                  images: dataImageMulti,
+                                })
+                              }>
+                              <Image
+                                key={key}
+                                style={{
+                                  flex: 1,
+                                  width: '100%',
+                                  height: '100%',
+                                  marginTop: 20,
+                                }}
+                                source={{uri: `${item.file_url}`}}
+                              />
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </ScrollView>
+                    </View>
+                  ) : (
+                    <View style={{height: 400}}>
+                      <EmptyImage></EmptyImage>
+                    </View>
+                  )}
+
                   {/* //contoh bikin signature  dtaro  sini */}
                   {/* {
                     (dataTiketMulti.status == 'A',
@@ -676,20 +704,32 @@ export default function ViewHistoryDetail({route}) {
                       <View
                         style={{
                           flexDirection: 'row',
-                          alignItems: 'center',
                         }}>
-                        <View style={widthStyle}>
-                          <Text>Assign To</Text>
+                        <View style={{alignContent: 'space-between', flex: 1}}>
+                          <Text style={{marginVertical: 8}}>Respond Date</Text>
                         </View>
-                        <View style={{width: 10}}>
-                          <Text>:</Text>
+                        <View style={{alignContent: 'space-between'}}>
+                          <Text style={{fontWeight: 'bold', marginVertical: 8}}>
+                            {moment(dataTiketMulti.respond_date).format(
+                              'DD MMM YYYY hh:mm',
+                            )}
+                          </Text>
                         </View>
-                        <View>
-                          <Text style={{flexWrap: 'wrap'}}>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                        }}>
+                        <View style={{alignContent: 'space-between', flex: 1}}>
+                          <Text style={{marginVertical: 8}}>Assign To</Text>
+                        </View>
+                        <View style={{alignContent: 'space-between'}}>
+                          <Text style={{fontWeight: 'bold', marginVertical: 8}}>
                             {dataTiketMulti.assign_to}
                           </Text>
                         </View>
                       </View>
+
                       <View style={{marginTop: 10}}>
                         <View>
                           <Text>Problem Cause</Text>
@@ -699,19 +739,66 @@ export default function ViewHistoryDetail({route}) {
                             style={{
                               width: '100%',
                               height: 'auto',
-                              borderColor: '#bcbbc1',
-                              borderRadius: 10,
+                              borderColor: '#e6e6e6',
+                              backgroundColor: '#e6e6e6',
+                              borderRadius: 8,
                               borderWidth: 0.5,
                               padding: 5,
                             }}>
-                            <Text style={{width: '100%'}}>
+                            <Text style={{width: '100%', height: 100}}>
                               {dataTiketMulti.problem_cause}
                             </Text>
                           </View>
                         </View>
                       </View>
 
-                      {dataAction.map((data, index) => {
+                      <View style={{marginTop: 20}}>
+                        <Text style={{fontWeight: 'bold', fontSize: 14}}>
+                          Gallery of Solved
+                        </Text>
+                      </View>
+                      {image_solved != 0 ? (
+                        <View
+                          style={{marginBottom: '40%', flexDirection: 'row'}}>
+                          <ScrollView horizontal>
+                            {image_solved?.map((item, key) => {
+                              return (
+                                <TouchableOpacity
+                                  key={key}
+                                  style={{width: 100, height: 100, margin: 5}}
+                                  activeOpacity={1}
+                                  onPress={() =>
+                                    navigation.navigate(
+                                      'PreviewImageHelpdesk',
+                                      {
+                                        images: image_solved,
+                                      },
+                                    )
+                                  }>
+                                  <Image
+                                    key={key}
+                                    style={{
+                                      flex: 1,
+                                      width: '100%',
+                                      height: '100%',
+                                      // height: 400,
+                                      marginTop: 10,
+                                    }}
+                                    source={{uri: `${item.file_url}`}}
+                                  />
+                                </TouchableOpacity>
+                                // </View>
+                              );
+                            })}
+                          </ScrollView>
+                        </View>
+                      ) : (
+                        <View style={{height: 400}}>
+                          <EmptyImage></EmptyImage>
+                        </View>
+                      )}
+
+                      {/* {dataAction.map((data, index) => {
                         <View key={index} style={{marginVertical: 5}}>
                           <View
                             style={{
@@ -774,7 +861,7 @@ export default function ViewHistoryDetail({route}) {
                             </View>
                           </View>
                         </View>;
-                      })}
+                      })} */}
                       {/* <TouchableOpacity
                         //   style={btnConfirm}
                         onPress={() => saveConfirm()}>

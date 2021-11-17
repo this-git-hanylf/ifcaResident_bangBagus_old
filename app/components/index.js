@@ -109,6 +109,7 @@ export {default as Button} from './Button';
 export {default as Tag} from './Tag';
 export {default as Icon} from './Icon';
 export {default as Image} from './Image';
+export {EmptyImage as EmptyImage} from './Image/EmptyImage';
 export {default as CheckBox} from './CheckBox';
 export {default as CommentItem} from './CommentItem';
 export {SafeAreaView} from 'react-native-safe-area-context';
