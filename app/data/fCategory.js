@@ -15,6 +15,13 @@ export const FCategoryData = [
     title: 'Announce',
     subtitle: 'Display data with Announce ',
   },
+  {
+    id: '7',
+    screen: 'Facility',
+    icon: 'umbrella-beach',
+    title: 'Facility',
+    subtitle: 'Facility Booking',
+  },
   //   {
   //     id: '1',
   //     screen: 'Facility',

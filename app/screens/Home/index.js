@@ -140,19 +140,26 @@ const Home = props => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <Image
-            source={require('../../assets/images/pakubuwono.png')}
+          <View
             style={{
-              height: 60,
-              width: 180,
-              flexDirection: 'row',
               alignItems: 'center',
-              marginHorizontal: 80,
-              marginBottom: 15,
-              marginTop: -15,
-              flexDirection: 'row',
-            }}
-          />
+              alignContent: 'center',
+              alignSelf: 'center',
+            }}>
+            <Image
+              source={require('../../assets/images/pakubuwono.png')}
+              style={{
+                height: 60,
+                width: 180,
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginHorizontal: 80,
+                marginBottom: 15,
+                marginTop: -15,
+              }}
+            />
+          </View>
+
           <View>
             <Swiper
               dotStyle={{
