@@ -102,4 +102,18 @@ export default StyleSheet.create({
   paddingContent: {
     paddingHorizontal: 20,
   },
+  viewIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    position: 'absolute',
+    bottom: 0,
+    right: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    width: 20,
+    height: 20,
+  },
 });

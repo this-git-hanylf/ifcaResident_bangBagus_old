@@ -31,6 +31,9 @@ import {
   Animated,
   ImageBackground,
   RefreshControl,
+  Dimensions,
+  Platform,
+  Button,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
@@ -43,6 +46,8 @@ import Categories from './Categories';
 import axios from 'axios';
 import * as Utils from '@utils';
 import numFormat from '../../components/numFormat';
+import Modal from 'react-native-modal';
+import {set} from 'react-native-reanimated';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -63,8 +68,17 @@ const Home = props => {
   const [getDataDue, setDataDue] = useState([]);
   const [hasError, setErrors] = useState(false);
   const [data, setData] = useState([]);
+  const [isModalVisible, setModalVisible] = useState(true);
 
   const [refreshing, setRefreshing] = useState(false);
+
+  const deviceWidth = Dimensions.get('window').width;
+  // const deviceHeight =
+  //   Platform.OS === 'ios'
+  //     ? Dimensions.get('window').height
+  //     : require('react-native-extra-dimensions-android').get(
+  //         'REAL_WINDOW_HEIGHT',
+  //       );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -81,6 +95,16 @@ const Home = props => {
       .catch(error => console.error(error))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setModalVisible(true);
+    }, 1000);
+  }, []);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   async function fetchDataDue() {
     try {
@@ -135,11 +159,79 @@ const Home = props => {
         style={[BaseStyle.safeAreaView, {flex: 1}]}
         edges={['right', 'top', 'left']}>
         <HeaderHome />
+
         <ScrollView
           contentContainerStyle={styles.paddingSrollView}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
+          <View>
+            <Modal
+              // deviceWidth={deviceWidth}
+              // deviceHeight={100}
+              style={{height: 100}}
+              isVisible={isModalVisible}
+              onBackdropPress={() => setModalVisible(false)}>
+              <View
+                style={{
+                  backgroundColor: BaseColor.whiteColor,
+                  borderRadius: 8,
+
+                  height: '50%',
+                  width: '62%',
+                  alignSelf: 'center',
+                }}>
+                <View
+                  style={{
+                    right: 0,
+                    alignSelf: 'center',
+                    position: 'absolute',
+                    flex: 1,
+                    zIndex: 2,
+                  }}>
+                  <TouchableOpacity
+                    style={[
+                      {
+                        width: 40,
+                        height: 40,
+                        borderRadius: 20,
+                        position: 'absolute',
+                        top: -15,
+
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        alignSelf: 'center',
+                      },
+                      {backgroundColor: colors.primary},
+                    ]}
+                    onPress={() => alert('halo')}>
+                    <Icon
+                      solid
+                      name="times"
+                      size={20}
+                      color={BaseColor.whiteColor}
+                      style={{alignSelf: 'center'}}
+                      // onPress={() => console.log("Your code")}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <Image
+                  source={require('../../assets/images/dashboard-ecomercial.png')}
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                    borderRadius: 8,
+                    resizeMode: 'contain',
+
+                    // flex: 1, //kalo dikasih flex, text nya keliatan
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                />
+                <Text>I am the modal content!</Text>
+              </View>
+            </Modal>
+          </View>
           <View
             style={{
               alignItems: 'center',
