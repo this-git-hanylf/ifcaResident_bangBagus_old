@@ -31,6 +31,7 @@ import {
   Animated,
   ImageBackground,
   RefreshControl,
+  Button,
 } from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useSelector} from 'react-redux';
@@ -43,7 +44,10 @@ import Categories from './Categories';
 import axios from 'axios';
 import * as Utils from '@utils';
 import numFormat from '../../components/numFormat';
-
+// import {NotificationHandlers} from '../../components/NotificationHandler';
+import PushNotification from 'react-native-push-notification';
+// import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {notifikasi} from '../../components/NotificationHandler';
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
 };
@@ -64,7 +68,13 @@ const Home = props => {
   const [hasError, setErrors] = useState(false);
   const [data, setData] = useState([]);
 
+  const [configureToken, setConfigureToken] = useState();
+
   const [refreshing, setRefreshing] = useState(false);
+
+  // const [notifhand, setnotifhand] = useState(NotificationHandlers().onRegister);
+
+  // console.log('NotificationHandler.token--->', NotificationHandlers());
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -81,6 +91,125 @@ const Home = props => {
       .catch(error => console.error(error))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      // configure_notif();
+      // setSpinner(false);
+    }, 3000);
+  }, []);
+
+  const configure_notif = () => {
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function (token) {
+        console.log('TOKEN:', token);
+        const tokenConf = token.token;
+        console.log('tokencong', tokenConf);
+        setConfigureToken(tokenConf);
+      },
+
+      // (required) Called when a remote is received or opened, or local notification is opened
+      onNotification: function (notification) {
+        console.log('NOTIFICATION on notifs:', notification);
+
+        // process the notification
+
+        if (typeof this._onNotification === 'function') {
+          setTimeout(() => {
+            this._onNotification(notification);
+          }, 3000);
+
+          // this._onNotification(notification);
+        }
+        // (required) Called when a remote is received or opened, or local notification is opened
+        // notification.finish(PushNotificationIOS.FetchResult.NoData);
+      },
+
+      // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+      onAction: function (notification) {
+        console.log('ACTION:', notification.action);
+        console.log('NOTIFICATION:', notification);
+
+        // setTimeout(() => {
+
+        //   // setSpinner(false);
+        // }, 3000);
+
+        if (notification.action === 'Yes') {
+          setTimeout(() => {
+            PushNotification.invokeApp(notification);
+          }, 3000);
+        }
+        // process the action
+      },
+
+      // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+      onRegistrationError: function (err) {
+        console.error(err.message, err);
+      },
+
+      // IOS ONLY (optional): default: all - Permissions to register.
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true,
+      },
+
+      // Should the initial notification be popped automatically
+      // default: true
+      popInitialNotification: true,
+
+      /**
+       * (optional) default: true
+       * - Specified if permissions (ios) and token (android and ios) will requested or not,
+       * - if not, you must call PushNotificationsHandler.requestPermissions() later
+       * - if you are not using remote notification or do not have Firebase installed, use this:
+       *     requestPermissions: Platform.OS === 'ios'
+       */
+      requestPermissions: true,
+    });
+  };
+
+  const kliknotif = () => {
+    configure_notif();
+    console.log('klik notifs');
+    console.log('configureToken', configureToken);
+
+    let headers = {
+      'Content-Type': 'application/json',
+      //hardcode
+      Authorization:
+        'key=AAAAeYlrdr0:APA91bFokl9dlfzGtdbK-VTcQ7IOHiCifd4Vu9-T1D0tcSZWs1RBDkcoBQdpERlAMP2etN7jZ0D8woPcuCXQPLAbAPGlTohBfsL6a1OozjuOmd_PGt0hTqP2JOxOkeEqNWvQKeJl8ap-',
+    };
+
+    const body = {
+      //to : hasil dari token yang beda2 disetiap device
+      to: configureToken,
+      priority: 'high',
+      soundName: 'default',
+      notification: {
+        title: 'Pakubuwono Residence',
+        body: 'Your ticket has been Submited. This is your Ticket Number # 123123123',
+      },
+    };
+    axios
+      .post('https://fcm.googleapis.com/fcm/send', body, {
+        headers,
+      })
+      .then(res => {
+        console.log('res', res.data);
+        // const datas = res.data;
+        // const dataDebtors = datas.Data;
+        // setDataDebtor(dataDebtors);
+
+        // return res.data;
+      })
+      .catch(error => {
+        console.log('error get tower api', error.response);
+        alert('error get');
+      });
+  };
 
   async function fetchDataDue() {
     try {
@@ -183,6 +312,8 @@ const Home = props => {
               })}
             </Swiper>
           </View>
+
+          <Button onPress={() => kliknotif()} title={'klik notif'}></Button>
 
           {/* <News43
             loading={loading}
